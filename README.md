@@ -1,6 +1,6 @@
 # Casper1
 Casper Code Example for Downloading Text Files
-
+**playground for learning. those exmaples may help other beginners.**
 ## Casper's problem for beginners?
 
 ### Caspser closes before it did the job.
