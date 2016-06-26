@@ -60,8 +60,17 @@ function next() {
             next();
         }
         else {
-            casper.exit();
+            downloadLabrador();
         }
+    });
+}
+function downloadLabrador() {
+    casper.thenOpen('https://en.wikipedia.org/wiki/File:Canadian_Golden_Retriever.jpeg', function (response) {
+        console.log(casper.getCurrentUrl());
+        casper.download('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Canadian_Golden_Retriever.jpeg/800px-Canadian_Golden_Retriever.jpeg', 'labrador.jpeg');
+    });
+    casper.run(function () {
+        casper.exit();
     });
 }
 //# sourceMappingURL=app.js.map
