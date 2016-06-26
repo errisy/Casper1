@@ -1,6 +1,29 @@
 ﻿var casper: Casper = require('casper');
 var fs: FileSystem = require('fs');
 
+class CasperWorker {
+    public links: string[];
+    public workload: (url: string, next: () => void) => void;
+    public callback: () => void;
+    constructor(links: string[], workload: (url: string, next: () => void) => void, callback: () => void) {
+        this.links = links.map(value => value);
+        this.workload = workload;
+        this.callback = callback;
+    }
+    public run = () => {
+        let that = this;
+        if (this.links.length > 0) {
+            let link = this.links.shift();
+            console.log('run: ' + link);
+            this.workload(link, that.run);
+        }
+        else {
+            this.callback();
+        }
+    }
+}
+
+
 //casper.viewport(1280, 960);
 var links: string[] = [];
 function getFileName(link: string): string {
@@ -58,30 +81,49 @@ casper.start('https://github.com/Microsoft/TypeScript/tree/master/src/compiler',
 
 casper.run(() => {
     casper.echo('Read Page: Microsoft/TypeScript/tree/master/src/compiler');
-    next();
+    downloadTSFiles();
 });
 
-function next() {
+function downloadTSFiles() {
     
-    casper.thenOpen(links.pop(), (response) => {
-        console.log(casper.getCurrentUrl());
-        //casper.download(casper.getCurrentUrl(), 'compiler/' + getFileName(casper.getCurrentUrl()));
-        fs.write('compiler/' + getFileName(casper.getCurrentUrl()), casper.getPageContent(), 'w');
+    //casper.thenOpen(links.pop(), (response) => {
+    //    console.log(casper.getCurrentUrl());
+    //    //casper.download(casper.getCurrentUrl(), 'compiler/' + getFileName(casper.getCurrentUrl()));
+    //    fs.write('compiler/' + getFileName(casper.getCurrentUrl()), casper.getPageContent(), 'w');
+    //});
+    //casper.run(() => {
+    //    if (links.length > 0) {
+    //        next();
+    //    }
+    //    else {
+    //        downloadLabrador();
+    //    }
+    //});
+    casper.then(() => {
+        links.forEach(link => {
+            console.log(link);
+            casper.download(casper.getCurrentUrl(), 'compiler/' + getFileName(casper.getCurrentUrl()));
+        });
     });
     casper.run(() => {
-        if (links.length > 0) {
-            next();
-        }
-        else {
-            downloadLabrador();
-        }
+        downloadLabrador();
     });
 }
 
 function downloadLabrador() {
     casper.thenOpen('https://en.wikipedia.org/wiki/File:Canadian_Golden_Retriever.jpeg', (response) => {
-        console.log(casper.getCurrentUrl());
-        casper.download('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Canadian_Golden_Retriever.jpeg/800px-Canadian_Golden_Retriever.jpeg', 'labrador.jpeg');
+        casper.waitForSelector('div.fullImageLink>a>img', () => {
+            console.log(casper.getCurrentUrl());
+            casper.download('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Canadian_Golden_Retriever.jpeg/800px-Canadian_Golden_Retriever.jpeg', 'labrador.jpeg');
+            let fullsize = casper.getElementAttribute('div.fullImageLink>a', 'href');
+            console.log(fullsize);
+            casper.download(fullsize, 'labrador-full.jpeg');
+            console.log('http://www.golden-retriever.com/wp-content/uploads/2015/02/golden-retriever.jpeg');
+            casper.download('http://www.golden-retriever.com/wp-content/uploads/2015/02/golden-retriever.jpeg', 'golden-retriever.jpeg');
+            console.log('https://twitter.com/W3C');
+            casper.download('https://twitter.com/W3C', 'twitter-w3c.txt');
+        });
+
     });
     casper.run(() => {
         casper.exit();

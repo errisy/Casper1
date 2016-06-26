@@ -14,7 +14,10 @@ interface EventEmitter {
     removeAllFilters(filter: string): Casper;
     setFilter(filter: string, cb: Function): boolean;
 }
-
+interface Selector {
+    type: string;
+    path: string;
+}
 interface Casper extends EventEmitter {
     test: Tester;
 
@@ -27,8 +30,8 @@ interface Casper extends EventEmitter {
 	// Methods
 	back(): Casper;
 	base64encode(url: string, method?: string, data?: any): string;
-	bypass(nb: number): any;
-	click(selector: string): boolean;
+    bypass(nb: number): any;
+    click(selector: string | Selector): boolean;
 	clickLabel(label: string, tag?: string): boolean;
 	capture(targetFilePath: string, clipRect: ClipRect): Casper;
 	captureBase64(format: string): string;
@@ -46,8 +49,8 @@ interface Casper extends EventEmitter {
 	echo(message: string, style?: string): Casper;
     evaluate<T>(fn: () => T, ...args: any[]): T
     evaluateOrDie(fn: () => any, message?: string, status?: number): Casper;
-	exit(status?: number): Casper;
-	exists(selector: string): boolean;
+    exit(status?: number): Casper;
+    exists(selector: string | Selector): boolean;
 	fetchText(selector: string): string;
 	forward(): Casper;
 	log(message: string, level?: string, space?: string): Casper;
@@ -74,16 +77,16 @@ interface Casper extends EventEmitter {
 	resourceExists(test: string): boolean;
 	run(onComplete: Function, time?: number): Casper;
 	scrollTo(x: number, y: number): Casper;
-	scrollToBottom(): Casper;
-	sendKeys(selector: string, keys: string, options?: any): Casper;
+    scrollToBottom(): Casper;
+    sendKeys(selector: string | Selector, keys: string, options?: any): Casper;
 	setHttpAuth(username: string, password: string): Casper;
 	start(url?: string, then?: (response: HttpResponse) => void): Casper;
 	status(asString: boolean): any;
 	then(fn: (self?: Casper) => void): Casper;
 	thenBypass(nb: number): Casper;
 	thenBypassIf(condition: any, nb: number): Casper;
-	thenBypassUnless(condition: any, nb: number): Casper;
-	thenClick(selector: string): Casper;
+    thenBypassUnless(condition: any, nb: number): Casper;
+    thenClick(selector: string | Selector): Casper;
     thenEvaluate(fn: () => any, ...args: any[]): Casper;
 	thenOpen(location: string, then?: (response: HttpResponse) => void): Casper;
 	thenOpen(location: string, options?: OpenSettings, then?: (response: HttpResponse) => void): Casper;
@@ -99,8 +102,8 @@ interface Casper extends EventEmitter {
 	waitForPopup(urlPattern: string, then?: Function, onTimeout?: Function, timeout?: number): Casper;
 	waitForPopup(urlPattern: RegExp, then?: Function, onTimeout?: Function, timeout?: number): Casper;
 	waitForUrl(url: string, then?: Function, onTimeout?: Function, timeout?: number): Casper;
-	waitForUrl(url: RegExp, then?: Function, onTimeout?: Function, timeout?: number): Casper;
-	waitForSelector(selector: string, then?: Function, onTimeout?: Function, timeout?: number): Casper;
+    waitForUrl(url: RegExp, then?: Function, onTimeout?: Function, timeout?: number): Casper;
+    waitForSelector(selector: string | Selector, then?: Function, onTimeout?: Function, timeout?: number): Casper;
 	waitWhileSelector(selector: string, then?: Function, onTimeout?: Function, timeout?: number): Casper;
 	waitForResource(testFx: Function, then?: Function, onTimeout?: Function, timeout?: number): Casper;
 	waitForText(pattern: string, then?: Function, onTimeout?: Function, timeout?: number): Casper;
