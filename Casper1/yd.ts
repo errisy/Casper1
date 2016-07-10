@@ -59,10 +59,10 @@
             //        casper.die('Timeout reached');
             //        casper.exit();
             //    }), 30000);
-            console.log('xpath test: ', casper.exists({
-                type: 'xpath',
-                path: '//*[@id="user_name"]'
-            }));
+            //console.log('xpath test: ', casper.exists({
+            //    type: 'xpath',
+            //    path: '//*[@id="user_name"]'
+            //}));
             //casper.sendKeys({
             //    type: 'xpath',
             //    path: '//*[@id="user_name"]'
